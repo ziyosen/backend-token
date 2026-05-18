@@ -1,0 +1,20 @@
+{
+  "version": 2,
+  "routes": [
+    {
+      "src": "/generate-token",
+      "dest": "/api/generate-token.js",
+      "methods": ["GET", "OPTIONS"]
+    },
+    {
+      "src": "/sign",
+      "dest": "/api/sign.js",
+      "methods": ["POST", "OPTIONS"]
+    },
+    {
+      "src": "/api/tools/dramabox/decrypt-video",
+      "dest": "/api/decrypt-video.js",
+      "methods": ["GET", "OPTIONS"]
+    }
+  ]
+}
