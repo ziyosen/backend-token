@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dramabox Cloud Scraper</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #121212; color: #fff; max-width: 600px; margin: 30px auto; padding: 20px; }
+        h1 { color: #00adb5; text-align: center; }
+        .box { background: #1e1e1e; padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        input, button { width: 100%; padding: 12px; margin: 8px 0; border-radius: 4px; border: none; box-sizing: border-box; }
+        input { background: #333; color: #fff; }
+        button { background: #00adb5; color: #fff; font-weight: bold; cursor: pointer; }
+        button:hover { background: #008088; }
+        pre { background: #000; padding: 15px; border-radius: 5px; overflow-x: auto; color: #00ff00; font-size: 13px; max-height: 400px; }
+    </style>
+</head>
+<body>
+
+    <h1>🎬 Dramabox Cloud Scraper</h1>
+    
+    <div class="box">
+        <h3>Menu 01: Search Drama</h3>
+        <input type="text" id="keyword" placeholder="Masukkan judul drama... (Contoh: CEO)">
+        <button onclick="searchDrama()">Cari Drama</button>
+    </div>
+
+    <div class="box">
+        <h3>Hasil Output:</h3>
+        <pre id="output">Menunggu instruksi...</pre>
+    </div>
+
+    <script>
+        async function searchDrama() {
+            const keyword = document.getElementById('keyword').value;
+            const output = document.getElementById('output');
+            if(!keyword) return alert('Ketik judulnya dulu!');
+
+            output.innerText = 'Sedang men-scrape data dari Dramabox cloud...';
+
+            try {
+                // Menembak ke API vercel lokal kita sendiri
+                const response = await fetch(`/api/search?keyword=${encodeURIComponent(keyword)}`);
+                const result = await response.json();
+
+                if(result.status) {
+                    output.innerText = JSON.stringify(result.data, null, 2);
+                } else {
+                    output.innerText = 'Error: ' + result.error;
+                }
+            } catch (error) {
+                output.innerText = 'Gagal terhubung ke server: ' + error.message;
+            }
+        }
+    </script>
+</body>
+</html>
