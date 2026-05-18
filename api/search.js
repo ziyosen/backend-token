@@ -2,7 +2,7 @@ import tls from "tls";
 import crypto from "crypto";
 import zlib from "zlib";
 
-function buildHeaders(deviceId, androidId, tokenStr) {
+function buildHeaders(deviceId, androidId) {
     return {
         "accept-encoding": "gzip",
         "version": "580",
@@ -28,15 +28,21 @@ function wRequest(urlStr, bodyObj, headersInput) {
         }
         requestRaw += `Content-Length: ${Buffer.byteLength(bodyStr)}\r\nConnection: close\r\n\r\n${bodyStr}`;
 
+        // Konfigurasi TLS yang mewajibkan spesifikasi HOST dan PORT secara eksplisit
         const tlsOptions = {
             host: urlObj.hostname,
+            port: 443, // Ditulis manual secara tegas di sini agar terhindar dari error argument must be specified
             servername: urlObj.hostname,
             rejectUnauthorized: false,
             ciphers: "TLS_AES_128_GCM_SHA256:TLS_AES_256_GCM_SHA384",
             ALPNProtocols: ["http/1.1"]
         };
 
-        const socket = tls.connect(tlsOptions, () => socket.write(requestRaw));
+        // Menggunakan sintaks penulisan objek argumen tls.connect yang valid di semua versi Node.js
+        const socket = tls.connect(tlsOptions, () => {
+            socket.write(requestRaw);
+        });
+
         let rawResponse = Buffer.alloc(0);
         socket.on("data", (c) => rawResponse = Buffer.concat([rawResponse, c]));
         socket.on("end", () => {
@@ -61,7 +67,10 @@ function wRequest(urlStr, bodyObj, headersInput) {
                 resolve({ success: false, error: "JSON Parse Error" });
             }
         });
+        
         socket.on("error", (err) => resolve({ success: false, error: err.message }));
+        socket.setTimeout(15000);
+        socket.on("timeout", () => { socket.destroy(); resolve({ success: false, error: "Timeout" }); });
     });
 }
 
