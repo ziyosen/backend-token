@@ -1,5 +1,6 @@
 {
   "version": 2,
+  "name": "dramabox-cloud-scraper",
   "routes": [
     {
       "src": "/generate-token",
@@ -15,6 +16,25 @@
       "src": "/api/tools/dramabox/decrypt-video",
       "dest": "/api/decrypt-video.js",
       "methods": ["GET", "OPTIONS"]
+    },
+    {
+      "src": "/api/search",
+      "dest": "/api/search.js",
+      "methods": ["GET", "OPTIONS"]
+    },
+    {
+      "src": "/api/latest",
+      "dest": "/api/latest.js",
+      "methods": ["GET", "OPTIONS"]
+    },
+    {
+      "src": "/api/episodes",
+      "dest": "/api/episodes.js",
+      "methods": ["GET", "OPTIONS"]
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/index.html"
     }
   ]
 }
